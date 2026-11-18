@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>A Letter For You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Kalam:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#111;--brown:#4a3320;--gold:#b8923e;--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .1 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:'Caveat',cursive;color:var(--brown);background:radial-gradient(ellipse at center,#f3e8cc 0%,#e5d3a8 70%,#cdb88a 100%);overflow:hidden}
+body::before{content:"";position:fixed;inset:0;background:var(--noise);pointer-events:none;z-index:50;opacity:.7}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .9s}
+.hidden{opacity:0;pointer-events:none;visibility:hidden}
+/* envelope */
+h1{font-size:clamp(2.2rem,8vw,3.6rem);margin-bottom:5vh;text-shadow:0 1px 0 #fff8;animation:fade 1.4s both}
+.env{position:relative;width:min(86vw,420px);aspect-ratio:3/2;margin-top:8vh;animation:rise 1.4s .3s both cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 18px 18px #4a332055)}
+.env>*{position:absolute}
+.eb{inset:0;background:linear-gradient(#cfb583,#bf9f6a);border-radius:4px;z-index:1}
+.peek{left:6%;right:6%;top:6%;bottom:6%;background:var(--noise),repeating-linear-gradient(#f6ecd2 0 15px,#d8c9a4 16px,#f6ecd2 17px);z-index:2;transition:transform 1.5s .55s cubic-bezier(.45,0,.2,1);box-shadow:0 0 8px #0004}
+.ef{inset:0;z-index:3;background:linear-gradient(135deg,#dcc496,#c9aa74);clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%);border-radius:4px}
+.flap{left:0;right:0;top:0;height:58%;z-index:4;background:linear-gradient(#e2cb9d,#cdae78);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .8s ease-in-out,background .8s}
+.seal{left:50%;top:44%;width:42px;height:42px;margin:-21px;border-radius:50%;z-index:5;background:radial-gradient(#b3262e,#7c1118);color:#f6d7a0;display:grid;place-items:center;box-shadow:0 2px 4px #0006;transition:opacity .3s}
+.env.open .flap{transform:rotateX(180deg);background:#b89a66}
+.env.open .seal{opacity:0}
+.env.open .flap{z-index:1;transition:transform .8s ease-in-out,background .8s,z-index 0s .4s}
+.env.open .peek{transform:translateY(-62%)}
+.btn{font-family:'Caveat',cursive;font-size:1.5rem;font-weight:700;color:#f6e7c4;background:linear-gradient(#6b4a2d,#4a3320);border:1px solid var(--gold);border-radius:30px;padding:.5rem 1.8rem;cursor:pointer;box-shadow:0 4px 10px #0004;transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}
+#openBtn{margin-top:6vh;animation:fade 1.4s 1s both}
+@keyframes fade{from{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(40px) scale(.95)}}
+/* reader */
+.stack{position:relative;perspective:2200px;perspective-origin:30% 50%}
+.page{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:0 0;transition:transform 1s cubic-bezier(.5,.05,.3,1),opacity 0s;box-shadow:0 2px 8px #4a332066}
+.page.turned{transform:rotate3d(.18,1,0,-172deg);opacity:0;transition:transform 1s cubic-bezier(.5,.05,.3,1),opacity .3s .7s}
+.page.turning{box-shadow:0 12px 40px #2a1a0a88}
+.stack::before,.stack::after{content:"";position:absolute;inset:0;background:#e8d9b4;box-shadow:0 2px 6px #4a332055;z-index:-1}
+.stack::before{transform:translate(4px,5px)}.stack::after{transform:translate(8px,10px);background:#dccba0}
+.front,.back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--noise),linear-gradient(135deg,#f6ecd0,#eadcb5);box-shadow:inset 0 0 50px #8a5f2a55,inset 0 0 6px #6b4a2d66}
+.front{clip-path:polygon(32px 0,100% 0,100% 100%,0 100%,0 32px)}
+.back{transform:rotateY(180deg);background:var(--noise),linear-gradient(225deg,#e9dab2,#d9c597)}
+.fold{position:absolute;left:0;top:0;width:32px;height:32px;background:linear-gradient(135deg,transparent 50%,#a98f5c 50%,#e9dcb8 85%);box-shadow:2px 2px 4px #0003;z-index:3}
+.staple{position:absolute;left:5px;top:12px;width:24px;height:4px;border-radius:2px;background:linear-gradient(#f2f2f2,#7d7d7d);transform:rotate(-45deg);box-shadow:1px 2px 2px #0006;z-index:4}
+.inner{position:absolute;inset:0;padding:11% 9% 9% 12%;overflow:hidden;font:300 10pt/1.75 'Kalam',cursive;color:var(--ink);white-space:pre-wrap;text-shadow:0 0 .6px #000a}
+.inner p{margin-bottom:.9em}.inner p.cont{margin-top:0}
+.inner .poem{margin:.2em 0 1em 1.2em;font-weight:400}
+.nav{position:fixed;bottom:max(12px,env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:center;min-width:52px;height:52px;padding:0 18px;font-size:1.5rem;border-radius:30px;z-index:60}
+.nav:disabled{opacity:.3;cursor:default}
+#prev{left:14px}#next{right:14px}
+#count{position:fixed;bottom:max(24px,calc(env(safe-area-inset-bottom) + 12px));left:50%;transform:translateX(-50%);font-size:1.4rem;z-index:60}
+/* surprise */
+#surprise{justify-content:flex-start;overflow-y:auto;padding:18px 0 40px}
+#surprise.hidden{overflow:hidden}
+.album{position:relative;width:min(94vw,calc((100vh - 120px)*297/210));aspect-ratio:297/210;flex:none;background:var(--noise),linear-gradient(135deg,#efe0bb,#dfcb9a);box-shadow:inset 0 0 70px #8a5f2a66,0 10px 30px #4a332088;border:1px solid #b99a5a;padding:3% 4%;display:flex;flex-direction:column;align-items:center}
+.album h2{font-size:clamp(1.4rem,4.5vw,2.8rem);margin-bottom:2%}
+.photos{flex:1;min-height:0;width:100%;display:flex;gap:4%;align-items:center;justify-content:center}
+.slot{flex:1;min-width:0;height:100%;display:flex;align-items:center;justify-content:center}
+.ph{position:relative;display:inline-block;line-height:0;max-width:100%;max-height:100%;padding:6px;background:#fffaf0;box-shadow:0 4px 12px #0006;transform:rotate(-1.5deg)}
+.slot:nth-child(2) .ph{transform:rotate(1.5deg)}
+.ph img{display:block;max-width:100%;max-height:calc(100% );width:auto;height:auto;object-fit:contain}
+.ph canvas{position:absolute;left:6px;top:6px;touch-action:none;cursor:crosshair;transition:opacity 1.3s}
+.ph canvas.done{opacity:0;pointer-events:none}
+.miss{font:1rem 'Kalam';line-height:1.4;padding:1rem;color:#7c1118;text-align:center;line-height:1.4}
+#thanks{margin-top:26px;text-align:center;font-size:clamp(1.6rem,5vw,2.6rem);line-height:1.5;opacity:0;transition:opacity 2.5s;flex:none;padding-bottom:20px}
+#thanks.show{opacity:1}#thanks small{display:block;font-size:.8em;margin-top:.4em;color:var(--gold)}
+</style></head><body>
+
+<div class="screen" id="intro">
+ <h1>A Letter For You</h1>
+ <div class="env" id="env"><div class="eb"></div><div class="peek"></div><div class="ef"></div><div class="flap"></div><div class="seal">❤</div></div>
+ <button class="btn" id="openBtn">Open Envelope</button>
+</div>
+
+<div class="screen hidden" id="reader">
+ <div class="stack" id="stack"></div>
+ <button class="btn nav" id="prev" aria-label="Previous page">&#8592;</button>
+ <div id="count"></div>
+ <button class="btn nav" id="next" aria-label="Next page">&#8594;</button>
+</div>
+
+<div class="screen hidden" id="surprise">
+ <div class="album"><h2>A Small Surprise By Me ❤️</h2>
+  <div class="photos">
+   <div class="slot"><div class="ph"><img src="photos/photo1.jpg" alt="Photograph 1"><canvas></canvas></div></div>
+   <div class="slot"><div class="ph"><img src="photos/photo2.jpg" alt="Photograph 2"><canvas></canvas></div></div>
+  </div></div>
+ <div id="thanks">Thank You For Reading ❤️<small>A message from UDIT</small></div>
+</div>
+
+<script>
+const LETTER = `Hi Shikha the letter is for you ...........I hope you are OK to read it and Sorry Pehle he bas kuch baate h jo muje bolni thi but agar tuje achi na lage to .......................
+
+Hi tu thik ho i hope, Bas yr ye letter muje bahut time se tuje dena tha but samaj nahi aa raha tha kese du or na he himmat ho rahi thi tuje dene ke liye. Kyu ke tera reaction ka pata nahi tha samaj nahi aa raha tha kya reaction hoga how will you react but fir laga ke itna jada se jada kya hoga ke reply nahi aayega ya fir samjhayegi. Jada nahi ghumaoonga but Sach bolu kabhi ummeed nahi thi tere se itni baat hogi fir se in topic pe ya tere se fir se itni baate hogi last time jab 1 Sem me hui thi yes you are the first crush or first whom i approach in 1 year of college before that shayad kabhi try nahi kiya hoga jab bhi tu pehle pasand thi but jo bhi misunderstanding hui and miscommunication ya fir or koi reason bolu but we stop talking But seriously i don't know kese i get you attach with you again after so long and again i got the same feeling and same emotion when we meet second time at coffee in LOC and when you share your past for that boy and other all the topics make me more and more emotional towards you. I never had thought to get the feeling again but when we meet second time i liking you again. before that i saw you as a good friend. and after that i am liking to talk you and getting more attached don't know why but feel like to talk to you make you happy and spend time with you. I don't have any expectation or any regret or any thing to Hide from you. yes i have change a little bit and want you to come to my life to improve me and want to grow with you for rest of the life i know life is not over but this was my last message like this in which i am sharing the actual feeling that i like you and Treating you as my crush or a partner and want the ans from your end which will be your genuine feeling do you like me or not or the truth which you can share without considering any other thing after this will never raise the topic or make you feel this because i know i think too much and i also know you don't like this that any one interfere in your life or force for some thing which you don't like. I also Hope tuje ye padh ke acha lage or its ok tuje agar koi reply nahi dena h to just like the message if you want appreciate and what ever you want to say you can say me mind nahi karunga na he tuje us ka explanation manunga. But seriously i will make it sure that tuje dost bola h dost jese rakhu make you feel that every time after this or after your reaction. No matter what you are in past or currently but will be a best friend always and make you priority before all. Yes i like to share the things with you and like to hear also from you...................................
+
+Tuje lagta h gift toffee and other chijo se me tuje impress kr raha hu esa nahi h after so many time i have earn a little and the point is that i don't have anyone to whom i can share the feeling or care other than family and some thing are such thing which can't share with them jo kisi friend ke sath kr skte h . to bas us sab se is baat krne ka try krta hu ke tuj se baat krke acha lagta h or jab tuje smile krte dekhta hu to ek alag se feeling aati h. SO YES I LIKE YOU VERY MUCH MISS SHIKHA (MUNMUN) and i also want to be in my life but without making it more emotional and dramatic jab tak tuje koi na mile will definitely wait for you fir tera koi bhi past ho ya na ho muje matter nahi karega because i want to make our present and future more value fir vo friendship me ho ya fir relationship me will make you will feel yes you are important and priority for me.
+
+Or ye sab likh ka Main reason ye he h ke tuj se sab bol pau last time because i know tuje pasand nahi h hamesha ye sab baate krta rahu ya fir ghum fir ke in baato pe aau because i don't know what you feel for me or tere what you are thinking but to always my first crush or me ye kabhi chupa nahi skta hu because jab tuje fir se mila tha i feel the same when i meet you first time. So rahi financial fit hone ke baat to will definitely be much stable within 3 year thats why i always ask for 3 year from every one even i promise what ever you want to do you can you can do your passion jo bhi ho teri respect to kam nahi hone dunga. Bas ye sab tuje khud se dena tha likh ke but i try so many time to send you but i can't . Bas ye message ke baad me itna chahata hu ke reply kare jo bhi you think ya jo bhi tuje lagta h will wait and appreciate also for that ans At least muje pata chalega how i have to change myself or to improve,,,,
+
+Thank you so much for patiently reading and understanding me as a friend i wish you became mine ❤️
+
+Last kuch line jo mene tuje dekh ke us mulakato me jana ( acha nahi likha itna but khud ne likha h )
+
+Shikha ❤️
+
+Kya kehna un aankhon ka, jinpe har nazar thehar jaaye,
+Kya kehna us muskurahat ka, jise dekh waqt bhi tham jaaye.
+
+Tumhara yun muskuraana, ek pal ko dil mein bas jaaye,
+Aur woh haseen lamha, baar-baar laut ke aaye.
+
+Tum hamare saamne baithi ho, hum tumhari adaaon mein kho jaayein,
+Kaash woh haseen din phir se aayein, phir wahi pal laut aayein.
+
+Tum apne saare dukh bhula do, hum tumhe har pal hasaayein,
+Tumhari har udaasi ko apni muskurahat se mitaayein.
+
+Phir kabhi ek aur raat mile, tumhe gaadi mein bitha kar kahin le jaayein,
+Jahaan duniya ko bhool kar, hum tumhari baaton mein kho jaayein.
+
+Aur aakhir mein bas itni si khwahish reh jaaye,
+Teri kuch adhuri baatein hon, aur unmein meri baat ho jaaye.
+
+Bas phir ek haseen mulaqat ho jaaye,
+Aur teri meri woh adhuri baat, aakhir poori ho jaaye... ❤️`;
+
+const $=id=>document.getElementById(id), stack=$('stack');
+let pages=[], cur=0, busy=false, lastW=0;
+
+/* ---------- envelope ---------- */
+$('openBtn').onclick=()=>{
+  $('openBtn').style.display='none';
+  $('env').classList.add('open');
+  setTimeout(()=>{ $('intro').classList.add('hidden'); $('reader').classList.remove('hidden'); },2600);
+};
+
+/* ---------- pagination (text is inserted exactly as written) ---------- */
+function size(){
+  const w=Math.min(innerWidth*.9,(innerHeight-100)*210/297);
+  stack.style.width=w+'px'; stack.style.height=(w*297/210)+'px';
+}
+function newPage(){
+  const pg=document.createElement('div'); pg.className='page';
+  pg.innerHTML='<div class="back"></div><div class="front"><div class="fold"></div><div class="staple"></div><div class="inner"></div></div>';
+  stack.appendChild(pg); pages.push(pg); return pg.querySelector('.inner');
+}
+const over=el=>el.scrollHeight>el.clientHeight+1;
+function paginate(){
+  size(); stack.innerHTML=''; pages=[];
+  let inner=newPage();
+  for(const block of LETTER.split(/\n\s*\n/)){
+    if(block.indexOf('\n')>-1){ // poem stanza
+      const d=document.createElement('div'); d.className='poem'; d.textContent=block; inner.appendChild(d);
+      if(over(inner)&&inner.children.length>1){ inner.removeChild(d); inner=newPage(); inner.appendChild(d); }
+      continue;
+    }
+    const words=block.split(' '); let start=0, first=true;
+    while(start<words.length){
+      const p=document.createElement('p'); if(!first)p.className='cont'; inner.appendChild(p);
+      const rest=words.length-start;
+      const fits=n=>{p.textContent=words.slice(start,start+n).join(' ');return !over(inner)};
+      if(fits(rest)){start=words.length;break;}
+      let lo=0,hi=rest-1; // largest n that fits
+      while(lo<hi){const m=Math.ceil((lo+hi)/2); fits(m)?lo=m:hi=m-1;}
+      let n=lo;
+      if(n===0){ inner.removeChild(p); if(inner.children.length){inner=newPage();first=first;continue;} n=1; inner.appendChild(p); }
+      for(let k=n-1;k>=Math.max(0,n-25);k--){ if(/[.?!]$|\.\.\.$/.test(words[start+k])){ n=k+1; break; } } // prefer ending on a sentence
+      p.textContent=words.slice(start,start+n).join(' ');
+      start+=n; first=false; inner=newPage();
+    }
+  }
+  if(!pages[pages.length-1].querySelector('.inner').children.length&&pages.length>1){pages.pop().remove();}
+  cur=Math.min(cur,pages.length-1); layout(); update();
+}
+function layout(){pages.forEach((p,i)=>{p.classList.toggle('turned',i<cur);p.style.zIndex=i<cur?pages.length+i:pages.length-i;});}
+function update(){
+  $('count').textContent=(cur+1)+' / '+pages.length;
+  $('prev').disabled=cur===0;
+  const last=cur===pages.length-1, nx=$('next');
+  nx.innerHTML=last?'Open Your Surprise ❤️':'&#8594;'; nx.setAttribute('aria-label',last?'Open Your Surprise':'Next page');
+}
+function turn(dir){
+  if(busy)return; busy=true;
+  if(dir>0){ const p=pages[cur]; p.style.zIndex=pages.length*3; p.classList.add('turning','turned'); cur++; setTimeout(()=>{p.classList.remove('turning');p.style.zIndex=pages.length+cur-1;busy=false;},1000); }
+  else{ cur--; const p=pages[cur]; p.style.zIndex=pages.length*3; p.classList.add('turning'); p.classList.remove('turned'); setTimeout(()=>{p.classList.remove('turning');p.style.zIndex=pages.length-cur;busy=false;},1000); }
+  update();
+}
+$('next').onclick=()=>{ if(cur===pages.length-1){ openSurprise(); } else turn(1); };
+$('prev').onclick=()=>turn(-1);
+addEventListener('keydown',e=>{ if($('reader').classList.contains('hidden'))return; if(e.key==='ArrowRight'&&cur<pages.length-1)turn(1); if(e.key==='ArrowLeft'&&cur>0)turn(-1); });
+let rt; addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{ if(Math.abs(innerWidth-lastW)>40||true){lastW=innerWidth;paginate();initScratch(false);} },250);});
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{lastW=innerWidth;paginate();});
+
+/* ---------- surprise + scratch ---------- */
+let scratchers=[], revealed=false, started=false;
+function openSurprise(){
+  $('reader').classList.add('hidden'); $('surprise').classList.remove('hidden'); $('surprise').scrollTop=0;
+  if(!started){started=true;initScratch(true);}
+}
+function paintCover(c,ctx,w,h){
+  ctx.globalCompositeOperation='source-over';
+  const g=ctx.createLinearGradient(0,0,w,h); g.addColorStop(0,'#e6d6aa'); g.addColorStop(1,'#cdb883');
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  for(let i=0;i<w*h/90;i++){ctx.fillStyle=`rgba(${90+Math.random()*60|0},${60+Math.random()*40|0},30,${Math.random()*.16})`;ctx.fillRect(Math.random()*w,Math.random()*h,1+Math.random()*2,1+Math.random()*2);}
+  ctx.strokeStyle='rgba(110,80,40,.25)';ctx.lineWidth=1.5;
+  for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(Math.random()*w,0);ctx.lineTo(Math.random()*w,h);ctx.stroke();}
+  ctx.strokeStyle='rgba(110,80,40,.35)';ctx.lineWidth=3;ctx.strokeRect(2,2,w-4,h-4);
+  ctx.fillStyle='rgba(74,51,32,.55)';ctx.font=`${Math.max(14,w/10)}px Caveat, cursive`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('Scratch here ❤',w/2,h/2);
+}
+function initScratch(first){
+  if(revealed)return;
+  scratchers=[];
+  document.querySelectorAll('.ph').forEach(ph=>{
+    const img=ph.querySelector('img'), cv=ph.querySelector('canvas');
+    const setup=()=>{
+      const dpr=Math.min(devicePixelRatio||1,2), w=img.clientWidth, h=img.clientHeight;
+      cv.width=w*dpr; cv.height=h*dpr; cv.style.width=w+'px'; cv.style.height=h+'px';
+      const ctx=cv.getContext('2d',{willReadFrequently:true}); ctx.scale(dpr,dpr); paintCover(cv,ctx,w,h);
+      scratchers.push({cv,ctx,w,h,dpr});
+      if(first||!cv._bound){cv._bound=true;bind(cv,ctx,dpr);}
+    };
+    if(img.complete&&img.naturalWidth) setup();
+    else if(img.complete){fail(ph,img);}
+    else{img.addEventListener('load',setup,{once:true});img.addEventListener('error',()=>fail(ph,img),{once:true});}
+  });
+}
+function fail(ph,img){ph.querySelector('canvas').style.display='none';img.style.display='none';const m=document.createElement('div');m.className='miss';m.textContent='Photo not found: '+img.getAttribute('src')+' — add your photo to the photos folder.';ph.appendChild(m);}
+function bind(cv,ctx,dpr){
+  let down=false,lx=0,ly=0,tick=0;
+  const pos=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*(cv.clientWidth/r.width),(e.clientY-r.top)*(cv.clientHeight/r.height)];};
+  const scratch=(x,y)=>{
+    ctx.globalCompositeOperation='destination-out'; const R=Math.max(14,cv.clientWidth/11);
+    ctx.lineCap=ctx.lineJoin='round'; ctx.lineWidth=R*2; ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y); ctx.stroke();
+    for(let i=0;i<14;i++){const a=Math.random()*6.283,d=R*(1+Math.random()*.35);ctx.beginPath();ctx.arc(x+Math.cos(a)*d,y+Math.sin(a)*d,1+Math.random()*3,0,6.283);ctx.fill();} // rough torn edge
+    lx=x;ly=y;
+  };
+  cv.addEventListener('pointerdown',e=>{down=true;cv.setPointerCapture(e.pointerId);[lx,ly]=pos(e);scratch(lx,ly);e.preventDefault();});
+  cv.addEventListener('pointermove',e=>{if(!down)return;const[x,y]=pos(e);scratch(x,y);if(++tick%6===0)check();e.preventDefault();});
+  const up=()=>{if(down){down=false;check();}};
+  cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+}
+function check(){
+  if(revealed||!scratchers.length)return;
+  let clear=0,total=0;
+  scratchers.forEach(s=>{const d=s.ctx.getImageData(0,0,s.cv.width,s.cv.height).data;for(let i=3;i<d.length;i+=64){total++;if(d[i]<40)clear++;}});
+  if(total&&clear/total>=.9){
+    revealed=true; scratchers.forEach(s=>s.cv.classList.add('done'));
+    setTimeout(()=>{$('thanks').classList.add('show');$('surprise').scrollTo({top:$('surprise').scrollHeight,behavior:'smooth'});},1200);
+  }
+}
+</script></body></html>
